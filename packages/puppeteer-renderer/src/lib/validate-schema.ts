@@ -19,6 +19,7 @@ export type PageOptions = yup.InferType<typeof pageSchema>
 export const pageViewportSchema = yup.object({
   width: yup.number().default(800),
   height: yup.number().default(600),
+  deviceScaleFactor: yup.number().default(1),
 })
 
 export type PageViewportOptions = yup.InferType<typeof pageViewportSchema>
