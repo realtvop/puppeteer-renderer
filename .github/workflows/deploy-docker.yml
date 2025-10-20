@@ -1,10 +1,10 @@
 name: Create and publish a Docker image
 
 on:
-  push:
-    tags:
-      - v*
-  workflow-dispatch:
+  - push:
+      tags:
+        - v*
+  - workflow-dispatch:
 
 env:
   REGISTRY: ghcr.io
