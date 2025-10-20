@@ -1,6 +1,6 @@
 services:
   puppeteer-renderer:
-    image: ghcr.io/realtvop/puppeteer-renderer:latest
+    image: ghcr.io/realtvop/puppeteer-renderer:main
     container_name: puppeteer-renderer
     restart: unless-stopped
     ports:
