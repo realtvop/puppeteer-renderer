@@ -22,7 +22,6 @@
     "pngjs": "^7.0.0",
     "puppeteer": "^22.8.1",
     "qs": "^6.11.1",
-    "sharp": "^0.34.4",
     "yup": "^1.0.2"
   },
   "devDependencies": {
@@ -34,7 +33,6 @@
     "@types/pixelmatch": "^5.2.4",
     "@types/pngjs": "^6.0.1",
     "@types/qs": "^6.9.7",
-    "@types/sharp": "^0.32.0",
     "chai": "^4.3.7",
     "eslint": "^8.41.0",
     "mocha": "^10.2.0",

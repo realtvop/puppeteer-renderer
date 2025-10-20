@@ -1,5 +1,4 @@
 import puppeteer, { Browser, Page, PuppeteerLaunchOptions } from 'puppeteer'
-import sharp from 'sharp'
 import waitForAnimations from './wait-for-animations'
 import {
   PageOptions,
@@ -67,27 +66,9 @@ export class Renderer {
         quality: options.type === 'png' ? undefined : options.quality,
       })
 
-      // Scale down the image by deviceScaleFactor
-      const scaleFactor = pageViewportOptions.deviceScaleFactor || 1
-      let finalBuffer = buffer
-
-      if (scaleFactor > 1) {
-        const metadata = await sharp(buffer).metadata()
-        if (metadata.width && metadata.height) {
-          const newWidth = Math.round(metadata.width / scaleFactor)
-          const newHeight = Math.round(metadata.height / scaleFactor)
-
-          finalBuffer = await sharp(buffer)
-            .resize(newWidth, newHeight, {
-              kernel: sharp.kernel.lanczos3,
-            })
-            .toBuffer()
-        }
-      }
-
       return {
         type: options.type,
-        buffer: finalBuffer,
+        buffer,
       }
     } finally {
       await this.closePage(page)
