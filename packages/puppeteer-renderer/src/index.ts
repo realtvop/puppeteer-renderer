@@ -11,6 +11,30 @@ const app = express()
 app.disable('x-powered-by')
 app.set('query parser', (s: any) => qs.parse(s, { allowDots: true }))
 
+// Global CORS middleware: allow any origin and handle preflight
+app.use((req: Request, res: Response, next: NextFunction) => {
+  // Allow any origin
+  res.header('Access-Control-Allow-Origin', '*')
+  // Allowed methods
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS')
+  // Echo requested headers if provided, otherwise allow common headers
+  const reqHeaders = req.header('Access-Control-Request-Headers')
+  res.header(
+    'Access-Control-Allow-Headers',
+    reqHeaders || 'Content-Type, Authorization, Accept, Origin, Referer, User-Agent, Cache-Control, Pragma, X-Requested-With'
+  )
+  // Expose headers that clients may need to read (e.g., for /pdf downloads)
+  res.header('Access-Control-Expose-Headers', 'Content-Disposition')
+  // Cache preflight for 24 hours
+  res.header('Access-Control-Max-Age', '86400')
+
+  if (req.method === 'OPTIONS') {
+    // Short-circuit preflight
+    return res.status(204).send()
+  }
+  next()
+})
+
 // Render url.
 app.use(router)
 
