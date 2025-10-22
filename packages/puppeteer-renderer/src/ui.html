@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puppeteer Renderer - Web UI</title>
+    <link rel="stylesheet" href="https://unpkg.com/mdui@2/mdui.css">
+    <script src="https://unpkg.com/mdui@2/mdui.global.js"></script>
+    <style>
+        body {
+            padding: 16px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .result-container {
+            margin-top: 24px;
+        }
+        .preview-image {
+            max-width: 100%;
+            border: 1px solid var(--mdui-color-surface-variant);
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+        .code-block {
+            background: var(--mdui-color-surface-variant);
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-top: 16px;
+        }
+        .endpoint-card {
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <mdui-top-app-bar>
+            <mdui-top-app-bar-title>Puppeteer Renderer</mdui-top-app-bar-title>
+        </mdui-top-app-bar>
+
+        <div style="margin-top: 80px;">
+            <mdui-card class="endpoint-card">
+                <div style="padding: 24px;">
+                    <h2>
+                        <mdui-icon name="home"></mdui-icon>
+                        欢迎使用 Puppeteer Renderer
+                    </h2>
+                    <p>这是一个基于 Puppeteer 的网页渲染服务，可以将网页转换为 HTML、截图或 PDF。</p>
+                </div>
+            </mdui-card>
+
+            <mdui-tabs value="html" placement="top-start">
+                <mdui-tab value="html">HTML 渲染</mdui-tab>
+                <mdui-tab value="screenshot">截图</mdui-tab>
+                <mdui-tab value="pdf">PDF 导出</mdui-tab>
+
+                <!-- HTML Tab -->
+                <mdui-tab-panel slot="panel" value="html">
+                    <mdui-card style="margin-top: 16px;">
+                        <div style="padding: 24px;">
+                            <h3>渲染网页为 HTML</h3>
+                            <p>获取渲染后的网页 HTML 内容</p>
+                            
+                            <mdui-text-field 
+                                id="html-url" 
+                                label="URL" 
+                                placeholder="https://example.com"
+                                value="https://example.com"
+                                style="width: 100%; margin-top: 16px;">
+                            </mdui-text-field>
+
+                            <mdui-text-field 
+                                id="html-wait" 
+                                label="等待时间 (ms)" 
+                                placeholder="0"
+                                type="number"
+                                style="width: 100%; margin-top: 16px;">
+                            </mdui-text-field>
+
+                            <mdui-button 
+                                id="html-btn" 
+                                variant="filled" 
+                                style="margin-top: 16px;">
+                                <mdui-icon slot="icon" name="code"></mdui-icon>
+                                获取 HTML
+                            </mdui-button>
+
+                            <div id="html-result" class="result-container" style="display: none;">
+                                <h4>结果</h4>
+                                <div class="code-block">
+                                    <pre id="html-content" style="margin: 0; white-space: pre-wrap; word-wrap: break-word;"></pre>
+                                </div>
+                            </div>
+
+                            <mdui-linear-progress id="html-progress" style="margin-top: 16px; display: none;"></mdui-linear-progress>
+                        </div>
+                    </mdui-card>
+                </mdui-tab-panel>
+
+                <!-- Screenshot Tab -->
+                <mdui-tab-panel slot="panel" value="screenshot">
+                    <mdui-card style="margin-top: 16px;">
+                        <div style="padding: 24px;">
+                            <h3>网页截图</h3>
+                            <p>生成网页的截图</p>
+                            
+                            <mdui-text-field 
+                                id="screenshot-url" 
+                                label="URL" 
+                                placeholder="https://example.com"
+                                value="https://example.com"
+                                style="width: 100%; margin-top: 16px;">
+                            </mdui-text-field>
+
+                            <mdui-text-field 
+                                id="screenshot-width" 
+                                label="宽度" 
+                                placeholder="1280"
+                                type="number"
+                                value="1280"
+                                style="width: 100%; margin-top: 16px;">
+                            </mdui-text-field>
+
+                            <mdui-text-field 
+                                id="screenshot-height" 
+                                label="高度" 
+                                placeholder="720"
+                                type="number"
+                                value="720"
+                                style="width: 100%; margin-top: 16px;">
+                            </mdui-text-field>
+
+                            <mdui-select 
+                                id="screenshot-type" 
+                                label="图片格式" 
+                                value="png"
+                                style="width: 100%; margin-top: 16px;">
+                                <mdui-menu-item value="png">PNG</mdui-menu-item>
+                                <mdui-menu-item value="jpeg">JPEG</mdui-menu-item>
+                                <mdui-menu-item value="webp">WebP</mdui-menu-item>
+                            </mdui-select>
+
+                            <mdui-button 
+                                id="screenshot-btn" 
+                                variant="filled" 
+                                style="margin-top: 16px;">
+                                <mdui-icon slot="icon" name="photo_camera"></mdui-icon>
+                                截图
+                            </mdui-button>
+
+                            <div id="screenshot-result" class="result-container" style="display: none;">
+                                <h4>预览</h4>
+                                <img id="screenshot-preview" class="preview-image" alt="Screenshot Preview">
+                                <mdui-button 
+                                    id="screenshot-download" 
+                                    variant="outlined" 
+                                    style="margin-top: 16px;">
+                                    <mdui-icon slot="icon" name="download"></mdui-icon>
+                                    下载图片
+                                </mdui-button>
+                            </div>
+
+                            <mdui-linear-progress id="screenshot-progress" style="margin-top: 16px; display: none;"></mdui-linear-progress>
+                        </div>
+                    </mdui-card>
+                </mdui-tab-panel>
+
+                <!-- PDF Tab -->
+                <mdui-tab-panel slot="panel" value="pdf">
+                    <mdui-card style="margin-top: 16px;">
+                        <div style="padding: 24px;">
+                            <h3>导出 PDF</h3>
+                            <p>将网页导出为 PDF 文件</p>
+                            
+                            <mdui-text-field 
+                                id="pdf-url" 
+                                label="URL" 
+                                placeholder="https://example.com"
+                                value="https://example.com"
+                                style="width: 100%; margin-top: 16px;">
+                            </mdui-text-field>
+
+                            <mdui-text-field 
+                                id="pdf-filename" 
+                                label="文件名" 
+                                placeholder="output.pdf"
+                                value="output.pdf"
+                                style="width: 100%; margin-top: 16px;">
+                            </mdui-text-field>
+
+                            <mdui-select 
+                                id="pdf-format" 
+                                label="页面格式" 
+                                value="A4"
+                                style="width: 100%; margin-top: 16px;">
+                                <mdui-menu-item value="Letter">Letter</mdui-menu-item>
+                                <mdui-menu-item value="Legal">Legal</mdui-menu-item>
+                                <mdui-menu-item value="Tabloid">Tabloid</mdui-menu-item>
+                                <mdui-menu-item value="Ledger">Ledger</mdui-menu-item>
+                                <mdui-menu-item value="A0">A0</mdui-menu-item>
+                                <mdui-menu-item value="A1">A1</mdui-menu-item>
+                                <mdui-menu-item value="A2">A2</mdui-menu-item>
+                                <mdui-menu-item value="A3">A3</mdui-menu-item>
+                                <mdui-menu-item value="A4">A4</mdui-menu-item>
+                                <mdui-menu-item value="A5">A5</mdui-menu-item>
+                                <mdui-menu-item value="A6">A6</mdui-menu-item>
+                            </mdui-select>
+
+                            <mdui-button 
+                                id="pdf-btn" 
+                                variant="filled" 
+                                style="margin-top: 16px;">
+                                <mdui-icon slot="icon" name="picture_as_pdf"></mdui-icon>
+                                生成 PDF
+                            </mdui-button>
+
+                            <div id="pdf-result" class="result-container" style="display: none;">
+                                <h4>PDF 已生成</h4>
+                                <p>PDF 文件已成功生成并已开始下载。</p>
+                            </div>
+
+                            <mdui-linear-progress id="pdf-progress" style="margin-top: 16px; display: none;"></mdui-linear-progress>
+                        </div>
+                    </mdui-card>
+                </mdui-tab-panel>
+            </mdui-tabs>
+        </div>
+
+        <mdui-card style="margin-top: 24px; margin-bottom: 24px;">
+            <div style="padding: 24px;">
+                <h3>
+                    <mdui-icon name="info"></mdui-icon>
+                    API 端点
+                </h3>
+                <p>你也可以直接通过以下 API 端点访问服务：</p>
+                <ul>
+                    <li><strong>GET /html</strong> - 渲染网页为 HTML</li>
+                    <li><strong>GET /screenshot</strong> - 生成网页截图</li>
+                    <li><strong>GET /pdf</strong> - 导出网页为 PDF</li>
+                </ul>
+                <p>查询参数: <code>url</code> (必需), <code>wait</code>, <code>viewport.width</code>, <code>viewport.height</code> 等</p>
+            </div>
+        </mdui-card>
+    </div>
+
+    <script>
+        // HTML Rendering
+        document.getElementById('html-btn').addEventListener('click', async () => {
+            const url = document.getElementById('html-url').value;
+            const wait = document.getElementById('html-wait').value;
+            const progress = document.getElementById('html-progress');
+            const result = document.getElementById('html-result');
+            const content = document.getElementById('html-content');
+
+            if (!url) {
+                mdui.snackbar({ message: '请输入 URL', placement: 'top' });
+                return;
+            }
+
+            progress.style.display = 'block';
+            result.style.display = 'none';
+
+            try {
+                let apiUrl = `/html?url=${encodeURIComponent(url)}`;
+                if (wait) {
+                    apiUrl += `&wait=${wait}`;
+                }
+
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const html = await response.text();
+                
+                content.textContent = html.substring(0, 5000) + (html.length > 5000 ? '\n... (truncated)' : '');
+                result.style.display = 'block';
+                mdui.snackbar({ message: 'HTML 获取成功', placement: 'top' });
+            } catch (error) {
+                mdui.snackbar({ message: `错误: ${error.message}`, placement: 'top' });
+            } finally {
+                progress.style.display = 'none';
+            }
+        });
+
+        // Screenshot
+        document.getElementById('screenshot-btn').addEventListener('click', async () => {
+            const url = document.getElementById('screenshot-url').value;
+            const width = document.getElementById('screenshot-width').value;
+            const height = document.getElementById('screenshot-height').value;
+            const type = document.getElementById('screenshot-type').value;
+            const progress = document.getElementById('screenshot-progress');
+            const result = document.getElementById('screenshot-result');
+            const preview = document.getElementById('screenshot-preview');
+
+            if (!url) {
+                mdui.snackbar({ message: '请输入 URL', placement: 'top' });
+                return;
+            }
+
+            progress.style.display = 'block';
+            result.style.display = 'none';
+
+            try {
+                let apiUrl = `/screenshot?url=${encodeURIComponent(url)}`;
+                if (width) apiUrl += `&viewport.width=${width}`;
+                if (height) apiUrl += `&viewport.height=${height}`;
+                if (type) apiUrl += `&type=${type}`;
+
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                
+                preview.src = objectUrl;
+                preview.dataset.blob = objectUrl;
+                result.style.display = 'block';
+                mdui.snackbar({ message: '截图成功', placement: 'top' });
+            } catch (error) {
+                mdui.snackbar({ message: `错误: ${error.message}`, placement: 'top' });
+            } finally {
+                progress.style.display = 'none';
+            }
+        });
+
+        // Download screenshot
+        document.getElementById('screenshot-download').addEventListener('click', () => {
+            const preview = document.getElementById('screenshot-preview');
+            const type = document.getElementById('screenshot-type').value;
+            const url = document.getElementById('screenshot-url').value;
+            
+            const link = document.createElement('a');
+            link.href = preview.src;
+            link.download = `screenshot-${Date.now()}.${type}`;
+            link.click();
+        });
+
+        // PDF Export
+        document.getElementById('pdf-btn').addEventListener('click', async () => {
+            const url = document.getElementById('pdf-url').value;
+            const filename = document.getElementById('pdf-filename').value;
+            const format = document.getElementById('pdf-format').value;
+            const progress = document.getElementById('pdf-progress');
+            const result = document.getElementById('pdf-result');
+
+            if (!url) {
+                mdui.snackbar({ message: '请输入 URL', placement: 'top' });
+                return;
+            }
+
+            progress.style.display = 'block';
+            result.style.display = 'none';
+
+            try {
+                let apiUrl = `/pdf?url=${encodeURIComponent(url)}`;
+                if (filename) apiUrl += `&filename=${encodeURIComponent(filename)}`;
+                if (format) apiUrl += `&format=${format}`;
+
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const blob = await response.blob();
+                
+                // Trigger download
+                const downloadUrl = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = filename || 'output.pdf';
+                link.click();
+                URL.revokeObjectURL(downloadUrl);
+                
+                result.style.display = 'block';
+                mdui.snackbar({ message: 'PDF 生成成功', placement: 'top' });
+            } catch (error) {
+                mdui.snackbar({ message: `错误: ${error.message}`, placement: 'top' });
+            } finally {
+                progress.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

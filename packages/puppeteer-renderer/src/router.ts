@@ -4,6 +4,8 @@ import { renderer } from './lib/renderer'
 import { pageSchema, pageViewportSchema, pdfSchema, screenshotSchema } from './lib/validate-schema'
 import contentDisposition from 'content-disposition'
 import { validateUrlDomain } from './lib/domain-validator'
+import * as fs from 'fs'
+import * as path from 'path'
 
 const router: Router = express.Router()
 
@@ -13,6 +15,21 @@ const urlSchema = yup.object({ url: yup.string().required() }).transform(current
     current.url = `https://${current.url}`
   }
   return current;
+})
+
+router.get('/ui', async (req, res, next) => {
+  try {
+    // Check if UI is enabled via environment variable
+    if (process.env.ENABLE_UI !== 'true') {
+      return res.status(404).send('UI not enabled.')
+    }
+
+    const uiPath = path.join(__dirname, 'ui.html')
+    const html = fs.readFileSync(uiPath, 'utf-8')
+    res.status(200).type('html').send(html)
+  } catch (e) {
+    next(e)
+  }
 })
 
 router.get('/html', async (req, res, next) => {

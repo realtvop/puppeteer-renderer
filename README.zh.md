@@ -45,6 +45,17 @@ docker run -d --name renderer -p 8080:3000 local/puppeteer-renderer
 - `IGNORE_HTTPS_ERRORS=true` - 忽略HTTPS错误
 - `PUPPETEER_ARGS='--host-rules=MAP localhost yourproxy'` - 添加将传递给Puppeteer的额外参数。支持多个参数。
 - `ALLOWED_DOMAINS='example.com,*.google.com'` - 允许的域名列表，逗号分隔。支持通配符`*`进行模式匹配。如果未设置或为空，则允许所有域名。
+- `ENABLE_UI=true` - 启用网页UI界面，可通过 `/ui` 端点访问
+
+## 网页UI
+
+当设置`ENABLE_UI=true`时，您可以通过`http://localhost:{port}/ui`访问基于网页的用户界面。此UI提供了一个简单的方式来：
+
+- 将网页渲染为HTML
+- 生成自定义尺寸和格式的截图
+- 导出网页为PDF文件
+
+该UI使用[MDUI](https://www.mdui.org/)框架构建，为所有渲染操作提供了现代化、直观的界面。
 
 ## 与现有服务集成
 

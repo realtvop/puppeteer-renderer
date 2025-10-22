@@ -40,11 +40,13 @@ app.use(router)
 
 // Index
 app.get('/', (req: Request, res: Response) => {
-  res
-    .status(200)
-    .send(
-      `You can use <a href="/html">/html</a>, <a href="/screenshot">/screenshot</a> or <a href="/pdf">/pdf</a> endpoint.`,
-    )
+  let message = `You can use <a href="/html">/html</a>, <a href="/screenshot">/screenshot</a> or <a href="/pdf">/pdf</a> endpoint.`
+  
+  if (process.env.ENABLE_UI === 'true') {
+    message += ` <br><br>Or visit <a href="/ui">/ui</a> for the web interface.`
+  }
+  
+  res.status(200).send(message)
 })
 
 // Not found page.
