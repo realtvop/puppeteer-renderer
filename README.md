@@ -1,5 +1,7 @@
 # Puppeteer(Chrome headless node API) based web page renderer
 
+[English](README.md) | [中文](README.zh.md)
+
 [Puppeteer](https://github.com/GoogleChrome/puppeteer) (Chrome headless node API) based web page renderer.
 
 Useful server side rendering through proxy. Outputs HTML, PDF and screenshots as PNG.
@@ -98,4 +100,4 @@ The file name is generated from the URL rendered:
 
 [MIT](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2017-present, Yeongjin Lee
+Copyright (c) 2017-present, Yeongjin Lee & 2025-present, realtvop
