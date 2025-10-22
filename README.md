@@ -42,6 +42,7 @@ When starting `pnpm {dev|start}` or docker container you can customize puppeteer
 
 - `IGNORE_HTTPS_ERRORS=true` - Ignores HTTPS errors
 - `PUPPETEER_ARGS='--host-rules=MAP localhost yourproxy'` - Ads additional args that will be passed to puppeteer. Supports multiple arguments.
+- `ALLOWED_DOMAINS='example.com,*.google.com'` - Comma-separated list of allowed domains. Supports wildcard `*` for pattern matching. If not set or empty, all domains are allowed.
 
 ## Integration with existing service.
 

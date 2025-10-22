@@ -1,10 +1,11 @@
 import * as yup from 'yup'
-import express from 'express'
+import express, { Router } from 'express'
 import { renderer } from './lib/renderer'
 import { pageSchema, pageViewportSchema, pdfSchema, screenshotSchema } from './lib/validate-schema'
 import contentDisposition from 'content-disposition'
+import { validateUrlDomain } from './lib/domain-validator'
 
-const router = express.Router()
+const router: Router = express.Router()
 
 const urlSchema = yup.object({ url: yup.string().required() }).transform(current => {
   const regex = /^https?:\/\//;
@@ -17,6 +18,10 @@ const urlSchema = yup.object({ url: yup.string().required() }).transform(current
 router.get('/html', async (req, res, next) => {
   try {
     const { url, ...pageOptions } = urlSchema.concat(pageSchema).validateSync(req.query)
+    
+    // Validate domain
+    validateUrlDomain(url)
+    
     const html = await renderer!.html(url, pageOptions)
     res.status(200).send(html)
   } catch (e) {
@@ -29,6 +34,9 @@ router.get('/screenshot', async (req, res, next) => {
     const { url, ...pageOptions } = urlSchema.concat(pageSchema).validateSync(req.query)
     const pageViewportOptions = pageViewportSchema.validateSync(req.query)
     const screenshotOptions = screenshotSchema.validateSync(req.query)
+
+    // Validate domain
+    validateUrlDomain(url)
 
     const { type, buffer } = await renderer!.screenshot(
       url,
@@ -56,6 +64,9 @@ router.get('/pdf', async (req, res, next) => {
       .concat(pageSchema)
       .validateSync(req.query)
     const pdfOptions = pdfSchema.validateSync(req.query)
+
+    // Validate domain
+    validateUrlDomain(url)
 
     const pdf = await renderer!.pdf(url, pageOptions, pdfOptions)
 

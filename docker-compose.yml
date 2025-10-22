@@ -5,3 +5,5 @@ services:
     restart: unless-stopped
     ports:
       - ${PORT}:3000
+    environment:
+      # - ALLOWED_DOMAINS=example.com,*.google.com
