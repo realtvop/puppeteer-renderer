@@ -5,5 +5,5 @@ services:
     restart: unless-stopped
     ports:
       - ${PORT}:3000
-    environment:
-      - ALLOWED_DOMAINS=salt.realtvop.top
+    # environment:
+    #   - ALLOWED_DOMAINS=salt.realtvop.top
