@@ -6,4 +6,4 @@ services:
     ports:
       - ${PORT}:3000
     environment:
-      # - ALLOWED_DOMAINS=example.com,*.google.com
+      - ALLOWED_DOMAINS=salt.realtvop.top
